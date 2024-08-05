@@ -14,8 +14,8 @@ public class UserService {
     private final UserRepository userRepository;
     public UserDetailsService userDetailsService() {
         return new UserDetailsService() {
-            public UserDetails loadUserByUsername(String username) {
-                return userRepository.findByUsername(username)
+            public UserDetails loadUserByUsername(String userName) {
+                return userRepository.findByUserName(userName)
                         .orElseThrow(() -> new UsernameNotFoundException("User not found"));
             }
         };
