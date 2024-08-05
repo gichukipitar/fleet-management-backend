@@ -16,3 +16,6 @@ spring:
       ddl-auto: update
     show-sql: true
     open-in-view: false
+token:
+  signing:
+    key: T3hpZnRsLD1NLFNGbVAofU8/TEB6emQzKlgyanlgOHkqMEF7Y1VEPmctPXg2SmFAYzdPKSNUOy9EdTBTXyRu
