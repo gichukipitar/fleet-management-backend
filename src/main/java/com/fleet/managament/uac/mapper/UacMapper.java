@@ -1,6 +1,8 @@
 package com.fleet.managament.uac.mapper;
 
 import com.fleet.managament.security.entity.User;
+import com.fleet.managament.uac.dtos.SignUpRequest;
+import com.fleet.managament.uac.dtos.SignUpUpdateRequest;
 import com.fleet.managament.utils.StringTrimmer;
 import org.mapstruct.Mapper;
 import org.mapstruct.NullValuePropertyMappingStrategy;
