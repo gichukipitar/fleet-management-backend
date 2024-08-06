@@ -20,10 +20,7 @@ import org.springframework.stereotype.Service;
 import com.fleet.managament.utils.*;
 
 import java.time.Instant;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static com.fleet.managament.utils.UtilFunctions.validateNotNull;
 
@@ -85,6 +82,22 @@ public class AuthenticationService implements UacInterface {
     }
 
     private List<ErrorMessage> validateUserDetails(SignUpRequest request) {
+        List<ErrorMessage> errorMessageList = new ArrayList<>();
+
+        Optional<User> existingUser = userRepository.findByUserName(request.getUserName());
+        if (existingUser.isPresent())
+            errorMessageList.add(
+                    ErrorMessage.builder().field("userName").message("Duplicate username found").build());
+        Optional <User> existingEmail = userRepository.findByEmail(request.getUserName());
+        if (existingEmail.isPresent())
+            errorMessageList.add(
+                    ErrorMessage.builder().field("email").message("Duplicate email found").build());
+        Optional <User> existingPhoneNumber = userRepository.findByPhoneNumber(request.getUserName());
+        if (existingPhoneNumber.isPresent())
+            errorMessageList.add(
+                    ErrorMessage.builder().field("phoneNumber").message("Duplicate phone number found").build());
+        return errorMessageList;
+
     }
 
     @Override
