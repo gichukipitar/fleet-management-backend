@@ -5,7 +5,7 @@ import com.fleet.managament.utils.SearchDto;
 import org.springframework.data.domain.Pageable;
 
 public interface UacInterface {
-    RestResponse createUser(SigninRequest request);
+    RestResponse createUser(SignUpRequest request);
     JwtAuthenticationResponse signIn(SigninRequest request);
 
     RestResponse fetchUser (SearchDto searchDto);
