@@ -45,7 +45,7 @@ public class UtilFunctions {
         return matcher.matches();
     }
 
-    private static <T> List<ErrorMessage> validateNotNull(Object obj) {
+    public static <T> List<ErrorMessage> validateNotNull(Object obj) {
 
         List<ErrorMessage> errors = new ArrayList<>();
 
