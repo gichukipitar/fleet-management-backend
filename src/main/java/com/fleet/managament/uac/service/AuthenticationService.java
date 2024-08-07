@@ -9,16 +9,26 @@ import com.fleet.managament.utils.CustomAppRepository;
 import com.fleet.managament.utils.ErrorMessage;
 import com.fleet.managament.utils.RestResponse;
 import com.fleet.managament.utils.SearchDto;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.fleet.managament.utils.*;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.*;
@@ -35,6 +45,11 @@ public class AuthenticationService implements UacInterface {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final CustomAppRepository<User> userCustomAppRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Transactional(readOnly = true)
 
     @Override
     public RestResponse createUser(SignUpRequest request) {
@@ -160,9 +175,45 @@ public class AuthenticationService implements UacInterface {
     }
 
     @Override
+
     public RestResponse fetchPaginatedUserList(SearchDto searchDto, Pageable pageable) {
-        return null;
+        try {
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<User> cq = cb.createQuery(User.class);
+            Root<User> user = cq.from(User.class);
+
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (ObjectUtils.isNotEmpty(searchDto.getFieldName()) && ObjectUtils.isNotEmpty(searchDto.getFieldName())) {
+                predicates.add(cb.like(user.get(searchDto.getFieldName()), "%" + searchDto.getSearchValue() + "%"));
+            }
+
+            cq.where(predicates.toArray(new Predicate[0]));
+
+            // Apply pagination
+            List<User> users = entityManager.createQuery(cq)
+                    .setFirstResult((int) pageable.getOffset())
+                    .setMaxResults(pageable.getPageSize())
+                    .getResultList();
+
+            // Get total count for pagination
+            CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
+            Root<User> userCount = countQuery.from(User.class);
+            countQuery.select(cb.count(userCount)).where(predicates.toArray(new Predicate[0]));
+            Long count = entityManager.createQuery(countQuery).getSingleResult();
+
+            Page<User> page = new PageImpl<>(users, pageable, count);
+
+            return new RestResponse(
+                    RestResponseObject.builder().message("Fetched Successfully").payload(page).build(),
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("fetchPaginatedUserList Exception:-" + e.getMessage());
+            return new RestResponse(
+                    RestResponseObject.builder().message(e.getMessage()).build(), HttpStatus.BAD_REQUEST);
+        }
     }
+
 
     @Override
     public RestResponse changeUserStatus(ChangeStatusRequest changeStatusRequest) {
