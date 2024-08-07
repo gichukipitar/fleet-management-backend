@@ -49,8 +49,6 @@ public class AuthenticationService implements UacInterface {
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Transactional(readOnly = true)
-
     @Override
     public RestResponse createUser(SignUpRequest request) {
         User user = UacMapper.INSTANCE.signUpToUserMapper(request);
@@ -175,7 +173,7 @@ public class AuthenticationService implements UacInterface {
     }
 
     @Override
-
+    @Transactional(readOnly = true)
     public RestResponse fetchPaginatedUserList(SearchDto searchDto, Pageable pageable) {
         try {
             CriteriaBuilder cb = entityManager.getCriteriaBuilder();
