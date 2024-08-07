@@ -11,7 +11,7 @@ public interface UacInterface {
 
     RestResponse fetchUser (SearchDto searchDto);
 
-    RestResponse changePassword(ChangeStatusRequest changeStatusRequest);
+    RestResponse changePassword(ChangePasswordRequest changePasswordRequest);
 
     RestResponse fetchPaginatedUserList(SearchDto searchDto, Pageable pageable);
 

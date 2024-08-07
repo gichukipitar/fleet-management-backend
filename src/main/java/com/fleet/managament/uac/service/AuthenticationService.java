@@ -122,7 +122,7 @@ public class AuthenticationService implements UacInterface {
                     HttpStatus.BAD_REQUEST);
         }
         try {
-            List <User> configs =
+            List<User> configs =
                     userCustomAppRepository.findByFieldAndValue(
                             User.class, searchDto.getFieldName(), searchDto.getSearchValue());
 
@@ -137,8 +137,26 @@ public class AuthenticationService implements UacInterface {
     }
 
     @Override
-    public RestResponse changePassword(ChangeStatusRequest changeStatusRequest) {
-        return null;
+    public RestResponse changePassword(ChangePasswordRequest changePasswordRequest) {
+        List<ErrorMessage> validateObj = validateNotNull(changePasswordRequest);
+        if (ObjectUtils.isNotEmpty(validateObj)) {
+            return new RestResponse(
+                    RestResponseObject.builder().message("Invalid fields!").errors(validateObj).build(),
+                    HttpStatus.BAD_REQUEST);
+        }
+        Optional<User> user = userRepository.findByUserName(changePasswordRequest.getUserName());
+        if (user.isEmpty()) {
+            return new RestResponse(
+                    RestResponseObject.builder().message("User does not exist").build(), HttpStatus.BAD_REQUEST);
+        }
+        User existingUser =
+                user.get().toBuilder()
+                        .password(passwordEncoder.encode(changePasswordRequest.getPassword()))
+                        .build();
+        userRepository.save(existingUser);
+        return new RestResponse(
+                RestResponseObject.builder().message("Password updated successfully successfully").build(), HttpStatus.OK
+        );
     }
 
     @Override
@@ -148,7 +166,22 @@ public class AuthenticationService implements UacInterface {
 
     @Override
     public RestResponse changeUserStatus(ChangeStatusRequest changeStatusRequest) {
-        return null;
+        List<ErrorMessage> validateObj = validateNotNull(changeStatusRequest);
+        if (ObjectUtils.isNotEmpty(validateObj)) {
+            return new RestResponse(
+                    RestResponseObject.builder().message("Invalid fields!").errors(validateObj).build(),
+                    HttpStatus.BAD_REQUEST);
+        }
+        Optional<User> user =
+                userRepository.findByUserName(changeStatusRequest.getUserName());
+        if (user.isEmpty()) {
+            return new RestResponse(
+                    RestResponseObject.builder().message("User does not exist").build(), HttpStatus.BAD_REQUEST);
+        }
+        User existingUser = user.get().toBuilder().active(changeStatusRequest.isStatus()).build();
+        userRepository.save(existingUser);
+        return new RestResponse(
+                RestResponseObject.builder().message("User status updated successfully").build(), HttpStatus.OK);
     }
 
     @Override
