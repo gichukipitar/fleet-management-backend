@@ -15,6 +15,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.fleet.managament.utils.*;
@@ -88,11 +89,11 @@ public class AuthenticationService implements UacInterface {
         if (existingUser.isPresent())
             errorMessageList.add(
                     ErrorMessage.builder().field("userName").message("Duplicate username found").build());
-        Optional <User> existingEmail = userRepository.findByEmail(request.getUserName());
+        Optional<User> existingEmail = userRepository.findByEmail(request.getUserName());
         if (existingEmail.isPresent())
             errorMessageList.add(
                     ErrorMessage.builder().field("email").message("Duplicate email found").build());
-        Optional <User> existingPhoneNumber = userRepository.findByPhoneNumber(request.getUserName());
+        Optional<User> existingPhoneNumber = userRepository.findByPhoneNumber(request.getUserName());
         if (existingPhoneNumber.isPresent())
             errorMessageList.add(
                     ErrorMessage.builder().field("phoneNumber").message("Duplicate phone number found").build());
@@ -102,12 +103,37 @@ public class AuthenticationService implements UacInterface {
 
     @Override
     public JwtAuthenticationResponse signIn(SigninRequest request) {
-        return null;
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getUserName(), request.getPassword()));
+        var user =
+                userRepository
+                        .findByUserName(request.getUserName())
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+        var jwt = jwtService.generateToken(user);
+        return JwtAuthenticationResponse.builder().token(jwt).build();
     }
 
     @Override
     public RestResponse fetchUser(SearchDto searchDto) {
-        return null;
+        List<ErrorMessage> validateObj = validateNotNull(searchDto);
+        if (ObjectUtils.isNotEmpty(validateObj)) {
+            return new RestResponse(
+                    RestResponseObject.builder().message("Invalid fields!!").errors(validateObj).build(),
+                    HttpStatus.BAD_REQUEST);
+        }
+        try {
+            List <User> configs =
+                    userCustomAppRepository.findByFieldAndValue(
+                            User.class, searchDto.getFieldName(), searchDto.getSearchValue());
+
+            return new RestResponse(
+                    RestResponseObject.builder().message("User fetched successfully").build(), HttpStatus.OK);
+
+        } catch (Exception e) {
+            log.error("Fetch entity exception:{}", e.getMessage());
+            return new RestResponse(
+                    RestResponseObject.builder().message(e.getMessage()).build(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @Override

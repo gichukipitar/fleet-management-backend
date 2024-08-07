@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SigninRequest {
-    private String login;
+    private String userName;
     private String password;
 }
