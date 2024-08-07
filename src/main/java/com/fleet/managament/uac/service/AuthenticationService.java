@@ -186,7 +186,38 @@ public class AuthenticationService implements UacInterface {
 
     @Override
     public RestResponse changeUserRole(ChangeRoleRequest changeRoleRequest) {
-        return null;
+        List<ErrorMessage> validateObj = validateNotNull(changeRoleRequest);
+        if (ObjectUtils.isNotEmpty(validateObj)) {
+            return new RestResponse(
+                    RestResponseObject.builder().message("Invalid fields!!").errors(validateObj).build(),
+                    HttpStatus.BAD_REQUEST);
+        }
+        Optional<User> user = userRepository.findByUserName(changeRoleRequest.getUserName());
+        if (user.isEmpty()) {
+            return new RestResponse(
+                    RestResponseObject.builder().message("User does not exist").build(), HttpStatus.BAD_REQUEST);
+        }
+        User existingUser = user.get();
+        Role previousRole = existingUser.getRole();
+        Role updateRole = Role.valueOf(changeRoleRequest.getRole());
+        boolean isValid = validateRole(previousRole, updateRole);
+        if (isValid) {
+            userRepository.save(existingUser.toBuilder().role(updateRole).build());
+            return new RestResponse(
+                    RestResponseObject.builder().message("User role updated successfully").build(), HttpStatus.OK);
+        }
+        return new RestResponse(
+                RestResponseObject.builder().message("Invalid Role provided").build(), HttpStatus.BAD_REQUEST);
+    }
+
+    private boolean validateRole(Role previousRole, Role newRole) {
+        if (previousRole.toString().startsWith("SUPER")) {
+            return List.of(Role.SUPER_ADMIN, Role.SUPER_USER).contains(newRole);
+        }
+        if (previousRole.toString().startsWith("NORMAL")) {
+            return List.of(Role.NORMAL_ADMIN, Role.NORMAL_USER).contains(newRole);
+        }
+        return false;
     }
 
     @Override
