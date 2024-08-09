@@ -1,10 +1,8 @@
 package com.fleet.managament.account.dtos;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -17,10 +15,12 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class InvoiceDTO implements Serializable {
-    Long id;
-    Date invoiceDate;
-    Long invoiceStatusId;
-    Long clientId;
-    String remarks;
+@ToString
+public class InvoiceRequest implements Serializable {
+    //Long id;
+    private Date invoiceDate;
+    private Long invoiceStatusId;
+    private Long clientId;
+    @NotNull(message = "remarks cannot be null")
+    private String remarks;
 }

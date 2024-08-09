@@ -1,6 +1,7 @@
 package com.fleet.managament.account.mapper;
 
-import com.fleet.managament.account.dtos.InvoiceDTO;
+import com.fleet.managament.account.dtos.InvoiceRequest;
+import com.fleet.managament.account.dtos.InvoiceResponse;
 import com.fleet.managament.account.entity.Invoice;
 import com.fleet.managament.utils.StringTrimmer;
 import org.mapstruct.Mapper;
@@ -15,6 +16,7 @@ import org.mapstruct.factory.Mappers;
 public interface InvoiceMapper {
     InvoiceMapper INSTANCE = Mappers.getMapper(InvoiceMapper.class);
 
-    InvoiceDTO toInvoiceDTO(Invoice invoice);
-    Invoice toInvoice(InvoiceDTO invoiceDTO);
+
+    Invoice invoiceRequestToInvoiceConfigs(InvoiceRequest invoiceRequest);
+    InvoiceResponse invoiceConfigsToInvoiceResponse(Invoice invoice);
 }
