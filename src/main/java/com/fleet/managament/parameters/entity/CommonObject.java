@@ -8,11 +8,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Data;
-
+import lombok.ToString;
 
 
 @Data
 @MappedSuperclass
+@ToString
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class CommonObject extends Audit {
     @Id
@@ -30,8 +31,4 @@ public class CommonObject extends Audit {
         this.details = details;
     }
 
-    @Override
-    public String toString() {
-        return "CommonObject [id=" + id + ", description=" + description + ", details=" + details + "]";
-    }
 }
