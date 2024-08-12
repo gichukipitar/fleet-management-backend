@@ -1,6 +1,7 @@
 package com.fleet.managament.parameters.dtos;
 
 import com.fleet.managament.parameters.entity.Country;
+import com.fleet.managament.parameters.entity.County;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

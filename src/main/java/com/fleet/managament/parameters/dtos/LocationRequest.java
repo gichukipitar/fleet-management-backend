@@ -2,6 +2,7 @@ package com.fleet.managament.parameters.dtos;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fleet.managament.parameters.entity.Country;
+import com.fleet.managament.parameters.entity.County;
 import lombok.*;
 
 @Data

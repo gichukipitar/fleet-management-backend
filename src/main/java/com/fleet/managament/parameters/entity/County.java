@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -12,24 +13,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class Location {
+public class County {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
-    private String description;
-    private String details;
+    private String name;
+    private String capital;
+    private String code;
 
     @ManyToOne
     @JoinColumn(name = "countryId", insertable = false, updatable = false)
     private Country country;
-    private Long countryId;
-
-    @ManyToOne
-    @JoinColumn(name = "countyId", insertable = false, updatable = false)
-    private County county;
     private Long countyId;
-
-    private String city;
-    private String address;
+    private String details;
 }

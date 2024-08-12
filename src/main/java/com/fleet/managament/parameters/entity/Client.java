@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import com.fleet.managament.parameters.entity.County;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -24,7 +26,6 @@ public class Client {
     private String phoneNumber;
     private String address;
     private String city;
-    private String county;
 
     @ManyToOne
     @JoinColumn (name = "countryId", insertable = false, updatable = false)
