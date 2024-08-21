@@ -1,6 +1,7 @@
 package com.fleet.managament.parameters.mapper;
 
 import com.fleet.managament.parameters.dtos.ClientRequest;
+import com.fleet.managament.parameters.dtos.ClientResponse;
 import com.fleet.managament.parameters.entity.Client;
 import com.fleet.managament.utils.StringTrimmer;
 import org.mapstruct.Mapper;
@@ -14,5 +15,6 @@ import org.mapstruct.factory.Mappers;
         uses = StringTrimmer.class)
 public interface ClientMapper {
     ClientMapper INSTANCE = Mappers.getMapper(ClientMapper.class);
-    Client clientRegistrationRequest(ClientRequest clientRequest);
+    Client clientToEntity(ClientRequest clientRequest);
+    ClientResponse clientToDto(Client client);
 }
