@@ -12,7 +12,7 @@ import org.mapstruct.factory.Mappers;
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
         uses = StringTrimmer.class)
-public interface ParametersMapper {
-    ParametersMapper INSTANCE = Mappers.getMapper(ParametersMapper.class);
+public interface ClientMapper {
+    ClientMapper INSTANCE = Mappers.getMapper(ClientMapper.class);
     Client clientRegistrationRequest(ClientRequest clientRequest);
 }
