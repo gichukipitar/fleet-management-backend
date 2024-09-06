@@ -22,7 +22,7 @@ public class CommonObject extends Audit {
     private String description;
     private String details;
 
-    private CommonObject(){
+    public CommonObject(){
 
     }
     public CommonObject(Long id,String description, String details) {

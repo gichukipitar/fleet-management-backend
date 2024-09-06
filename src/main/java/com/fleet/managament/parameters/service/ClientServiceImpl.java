@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.fleet.managament.utils.UtilFunctions.validateNotNull;
 
@@ -46,4 +47,37 @@ public class ClientServiceImpl implements ClientInterface {
                     RestResponseObject.builder().message(e.getMessage()).build(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @Override
+    public RestResponse updateClient(Long clientId, ClientRequest clientRequest) {
+        List <ErrorMessage> validateObj = validateNotNull(clientRequest);
+        if (ObjectUtils.isNotEmpty(validateObj)){
+            return new RestResponse(
+                    RestResponseObject.builder().message("invalid fields").errors(validateObj).build(),
+                    HttpStatus.BAD_REQUEST);
+                    }
+        Optional <Client> existingConfigOptional = clientRepository.findById(clientId);
+        if (existingConfigOptional.isEmpty()){
+            return new RestResponse(
+                    RestResponseObject.builder().message("client not found").build(),
+                    HttpStatus.BAD_REQUEST);
+        }
+        //update existing fields with dto data
+        Client existingClient = existingConfigOptional.get();
+        ClientMapper.INSTANCE.updateClientFromDto(clientRequest,existingClient);
+
+        try {
+            Client savedClient = clientRepository.save(existingClient);
+            ClientResponse clientResponse = ClientMapper.INSTANCE.clientToDto(savedClient);
+            return new RestResponse(
+                    RestResponseObject.builder().message("Client updated successfully").payload(clientResponse).build(),
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Error updating client{}", e.getMessage());
+            return new RestResponse(
+                    RestResponseObject.builder().message(e.getMessage()).build(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
 }

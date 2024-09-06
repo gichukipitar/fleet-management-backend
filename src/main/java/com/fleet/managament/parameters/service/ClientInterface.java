@@ -5,4 +5,5 @@ import com.fleet.managament.utils.RestResponse;
 
 public interface ClientInterface {
     RestResponse createClient(ClientRequest clientRequest);
+    RestResponse updateClient(Long clientId, ClientRequest clientRequest);
 }

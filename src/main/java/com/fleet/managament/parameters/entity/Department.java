@@ -20,8 +20,8 @@ public class Department {
     private String name;
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "managerId", insertable = false, updatable = false)
-    private Employee manager;
-    private Long managerId;
+//    @ManyToOne
+//    @JoinColumn(name = "managerId", insertable = false, updatable = false)
+//    private Employee manager;
+//    private Long managerId;
 }
