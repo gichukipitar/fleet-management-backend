@@ -18,7 +18,7 @@ import java.util.List;
 public class Country {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long countryId;
     private String countryCode;
     private String countryName;
     private String capitalCity;

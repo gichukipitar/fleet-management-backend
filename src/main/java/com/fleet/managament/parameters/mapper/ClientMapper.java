@@ -15,6 +15,6 @@ public interface ClientMapper {
     ClientMapper INSTANCE = Mappers.getMapper(ClientMapper.class);
     Client clientToEntity(ClientRequest clientRequest);
     ClientResponse clientToDto(Client client);
-    @Mapping(target = "id", ignore = true)
+   // @Mapping(target = "id", ignore = true)
     void updateClientFromDto(ClientRequest clientRequest, @MappingTarget Client client);
 }

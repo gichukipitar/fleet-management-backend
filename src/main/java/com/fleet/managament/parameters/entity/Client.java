@@ -28,14 +28,14 @@ public class Client {
     private String city;
 
     @ManyToOne
-    @JoinColumn (name = "countryId", insertable = false, updatable = false)
+    @JoinColumn (name = "countryId")
     private Country country;
     private Long countryId;
 
     @ManyToOne
-    @JoinColumn(name = "stateId", insertable = false, updatable = false)
+    @JoinColumn(name = "countyId")
     private County county;
-    private Long stateId;
+    private Long countyId;
 
     private String details;
 
