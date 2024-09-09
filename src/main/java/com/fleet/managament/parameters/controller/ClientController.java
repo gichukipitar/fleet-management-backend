@@ -1,6 +1,12 @@
 package com.fleet.managament.parameters.controller;
 
+import com.fleet.managament.parameters.dtos.ClientRequest;
+import com.fleet.managament.parameters.service.ClientServiceImpl;
+import com.fleet.managament.utils.RestResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -10,4 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 
 public class ClientController {
+    private final ClientServiceImpl clientServiceImpl;
+    @PostMapping(path = "/create", produces = "application/json")
+    public RestResponse createClient (@Valid @RequestBody ClientRequest clientRequest) {
+        System.out.println("Received request: " + clientRequest);
+        return clientServiceImpl.createClient(clientRequest);
+    }
 }
