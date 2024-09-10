@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class County {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long countyId;
     private String name;
     private String capital;
     private String code;
@@ -24,6 +24,6 @@ public class County {
     @ManyToOne
     @JoinColumn(name = "countryId", insertable = false, updatable = false)
     private Country country;
-    private Long countyId;
+    private Long countryId;
     private String details;
 }

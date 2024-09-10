@@ -1,5 +1,6 @@
 package com.fleet.managament.parameters.dtos;
 
+import com.fleet.managament.parameters.entity.County;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,5 +17,6 @@ public class ClientResponse {
     private String phoneNumber;
     private String address;
     private String city;
-    private String county;
+    private County county;
+  //  private Long countryId;
 }

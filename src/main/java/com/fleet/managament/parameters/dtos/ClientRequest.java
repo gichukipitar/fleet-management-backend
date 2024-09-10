@@ -1,6 +1,7 @@
 package com.fleet.managament.parameters.dtos;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fleet.managament.parameters.entity.County;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -26,5 +27,6 @@ public class ClientRequest implements Serializable {
     private String phoneNumber;
     private String address;
     private String city;
-    private String county;
+    private County county;
+    private Long countryId;
 }
