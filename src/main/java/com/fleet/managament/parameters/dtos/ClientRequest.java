@@ -27,6 +27,6 @@ public class ClientRequest implements Serializable {
     private String phoneNumber;
     private String address;
     private String city;
-    private County county;
-    private Long countryId;
+//    private County county;
+//    private Long countryId;
 }

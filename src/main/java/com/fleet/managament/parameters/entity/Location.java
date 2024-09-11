@@ -20,15 +20,15 @@ public class Location {
     private String description;
     private String details;
 
-    @ManyToOne
-    @JoinColumn(name = "countryId", insertable = false, updatable = false)
-    private Country country;
-    private Long countryId;
-
-    @ManyToOne
-    @JoinColumn(name = "countyId", insertable = false, updatable = false)
-    private County county;
-    private Long countyId;
+//    @ManyToOne
+//    @JoinColumn(name = "countryId", insertable = false, updatable = false)
+//    private Country country;
+//    private Long countryId;
+//
+//    @ManyToOne
+//    @JoinColumn(name = "countyId", insertable = false, updatable = false)
+//    private County county;
+//    private Long countyId;
 
     private String city;
     private String address;

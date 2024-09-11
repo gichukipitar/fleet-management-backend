@@ -19,7 +19,7 @@ public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    private Long clientId;
     @Column(name = "first_name")
     private String firstName;
     @Column(name = "last_name")
@@ -33,16 +33,16 @@ public class Client {
     @Column(name = "city")
     private String city;
 
-    @ManyToOne
-    @JoinColumn (name = "countryId", insertable=false, updatable=false)
-    private Country country;
-    private Long countryId;
+//    @ManyToOne
+//    @JoinColumn (name = "countryId", insertable=false, updatable=false)
+//    private Country country;
+//    private Long countryId;
 
-    @ManyToOne
-    @JoinColumn(name = "countyId", insertable=false, updatable=false)
-    private County county;
-    private Long countyId;
-    @Column(name = "details")
-    private String details;
+//    @ManyToOne
+//    @JoinColumn(name = "countyId", insertable=false, updatable=false)
+//    private County county;
+//    private Long countyId;
+//    @Column(name = "details")
+//    private String details;
 
 }

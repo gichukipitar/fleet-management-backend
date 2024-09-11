@@ -17,6 +17,6 @@ public class ClientResponse {
     private String phoneNumber;
     private String address;
     private String city;
-    private County county;
+    //private County county;
   //  private Long countryId;
 }

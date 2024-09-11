@@ -21,9 +21,9 @@ public class County {
     private String capital;
     private String code;
 
-    @ManyToOne
-    @JoinColumn(name = "countryId", insertable = false, updatable = false)
-    private Country country;
-    private Long countryId;
-    private String details;
+//    @ManyToOne
+//    @JoinColumn(name = "countryId", insertable = false, updatable = false)
+//    private Country country;
+//    private Long countryId;
+//    private String details;
 }
