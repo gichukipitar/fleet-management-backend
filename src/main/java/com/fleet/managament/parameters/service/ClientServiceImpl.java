@@ -5,9 +5,7 @@ import com.fleet.managament.parameters.dtos.ClientResponse;
 import com.fleet.managament.parameters.entity.Client;
 import com.fleet.managament.parameters.mapper.ClientMapper;
 import com.fleet.managament.parameters.repository.ClientRepository;
-import com.fleet.managament.utils.ErrorMessage;
-import com.fleet.managament.utils.RestResponse;
-import com.fleet.managament.utils.RestResponseObject;
+import com.fleet.managament.utils.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -24,11 +22,13 @@ import static com.fleet.managament.utils.UtilFunctions.validateNotNull;
 @RequiredArgsConstructor
 public class ClientServiceImpl implements ClientInterface {
     private final ClientRepository clientRepository;
+    private final CustomRepositoryImpl customRepositoryImpl;
+    private final CustomAppRepository <Client> customAppRepository;
 
     @Override
     public RestResponse createClient(ClientRequest clientRequest) {
         List<ErrorMessage> validateObj = validateNotNull(clientRequest);
-        if (ObjectUtils.isNotEmpty(validateObj)){
+        if (ObjectUtils.isNotEmpty(validateObj)) {
             return new RestResponse(
                     RestResponseObject.builder().message("Invalid fields").errors(validateObj).build(),
                     HttpStatus.BAD_REQUEST);
@@ -56,21 +56,21 @@ public class ClientServiceImpl implements ClientInterface {
 
     @Override
     public RestResponse updateClient(Long clientId, ClientRequest clientRequest) {
-        List <ErrorMessage> validateObj = validateNotNull(clientRequest);
-        if (ObjectUtils.isNotEmpty(validateObj)){
+        List<ErrorMessage> validateObj = validateNotNull(clientRequest);
+        if (ObjectUtils.isNotEmpty(validateObj)) {
             return new RestResponse(
                     RestResponseObject.builder().message("invalid fields").errors(validateObj).build(),
                     HttpStatus.BAD_REQUEST);
-                    }
-        Optional <Client> existingConfigOptional = clientRepository.findById(clientId);
-        if (existingConfigOptional.isEmpty()){
+        }
+        Optional<Client> existingConfigOptional = clientRepository.findById(clientId);
+        if (existingConfigOptional.isEmpty()) {
             return new RestResponse(
                     RestResponseObject.builder().message("client not found").build(),
                     HttpStatus.BAD_REQUEST);
         }
         //update existing fields with dto data
         Client existingClient = existingConfigOptional.get();
-        ClientMapper.INSTANCE.updateClientFromDto(clientRequest,existingClient);
+        ClientMapper.INSTANCE.updateClientFromDto(clientRequest, existingClient);
 
         try {
             Client savedClient = clientRepository.save(existingClient);
@@ -85,5 +85,27 @@ public class ClientServiceImpl implements ClientInterface {
         }
     }
 
+    @Override
+    public RestResponse fetchClient(SearchDto searchDto){
+        List<ErrorMessage> validateObj = validateNotNull(searchDto);
+        if (ObjectUtils.isNotEmpty(validateObj)) {
+            return new RestResponse(
+                    RestResponseObject.builder().message("Invalid fields").errors(validateObj).build(),
+                    HttpStatus.BAD_REQUEST);
+        }
+        try {
+            List<Client> configs = customAppRepository.findByFieldAndValue(
+                    Client.class, searchDto.getFieldName(), searchDto.getSearchValue());
+            List <ClientResponse> response =
+                    ClientMapper.INSTANCE.clientsConfigsToClientResponseList(configs);
 
+            return new RestResponse(
+                    RestResponseObject.builder().message("Client fetched succesfully").payload(response).build(),
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Error fetching client{}", e.getMessage());
+            return new RestResponse(
+                    RestResponseObject.builder().message(e.getMessage()).build(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }
