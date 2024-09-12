@@ -19,7 +19,6 @@ public class ClientController {
     private final ClientServiceImpl clientServiceImpl;
     @PostMapping(path = "/create", produces = "application/json")
     public RestResponse createClient (@Valid @RequestBody ClientRequest clientRequest) {
-        System.out.println("Received request: " + clientRequest);
         return clientServiceImpl.createClient(clientRequest);
     }
 }

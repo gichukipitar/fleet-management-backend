@@ -34,9 +34,15 @@ public class ClientServiceImpl implements ClientInterface {
                     HttpStatus.BAD_REQUEST);
         }
         try {
+            // Log the ClientRequest DTO before mapping
+            log.info("ClientRequest received: {}", clientRequest);
             Client clientConfigs =
                     ClientMapper.INSTANCE.clientToEntity(clientRequest);
+            // Log the mapped Client entity
+            log.info("Mapped Client entity: {}", clientConfigs);
             Client savedConfigs = clientRepository.save(clientConfigs);
+            // Log the saved Client entity
+            log.info("Saved Client entity: {}", savedConfigs);
             ClientResponse response = ClientMapper.INSTANCE.clientToDto(savedConfigs);
             return new RestResponse(
                     RestResponseObject.builder().message("created client successfully").payload(response).build(),
