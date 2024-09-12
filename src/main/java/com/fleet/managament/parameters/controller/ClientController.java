@@ -3,6 +3,7 @@ package com.fleet.managament.parameters.controller;
 import com.fleet.managament.parameters.dtos.ClientRequest;
 import com.fleet.managament.parameters.service.ClientServiceImpl;
 import com.fleet.managament.utils.RestResponse;
+import com.fleet.managament.utils.SearchDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -22,5 +23,9 @@ public class ClientController {
     public RestResponse updateClient (@Valid @RequestParam(value = "clientId") Long clientId,
     @Valid @RequestBody ClientRequest clientRequest) {
         return clientServiceImpl.updateClient(clientId, clientRequest);
+    }
+    @GetMapping(path="/search/client", produces = "application/json")
+    public RestResponse searchClient(SearchDto searchDto) {
+        return clientServiceImpl.fetchClient(searchDto);
     }
 }
