@@ -9,6 +9,9 @@ import com.fleet.managament.utils.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +26,7 @@ import static com.fleet.managament.utils.UtilFunctions.validateNotNull;
 public class ClientServiceImpl implements ClientInterface {
     private final ClientRepository clientRepository;
     private final CustomRepositoryImpl customRepositoryImpl;
-    private final CustomAppRepository <Client> customAppRepository;
+    private final CustomAppRepository<Client> customAppRepository;
 
     @Override
     public RestResponse createClient(ClientRequest clientRequest) {
@@ -86,7 +89,7 @@ public class ClientServiceImpl implements ClientInterface {
     }
 
     @Override
-    public RestResponse fetchClient(SearchDto searchDto){
+    public RestResponse fetchClient(SearchDto searchDto) {
         List<ErrorMessage> validateObj = validateNotNull(searchDto);
         if (ObjectUtils.isNotEmpty(validateObj)) {
             return new RestResponse(
@@ -96,7 +99,7 @@ public class ClientServiceImpl implements ClientInterface {
         try {
             List<Client> configs = customAppRepository.findByFieldAndValue(
                     Client.class, searchDto.getFieldName(), searchDto.getSearchValue());
-            List <ClientResponse> response =
+            List<ClientResponse> response =
                     ClientMapper.INSTANCE.clientsConfigsToClientResponseList(configs);
 
             return new RestResponse(
@@ -108,4 +111,30 @@ public class ClientServiceImpl implements ClientInterface {
                     RestResponseObject.builder().message(e.getMessage()).build(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @Override
+    public RestResponse fetchPaginatedClients(SearchDto searchDto, Pageable pageable) {
+        try {
+            // Ensure field name and value are provided
+            if (ObjectUtils.isEmpty(searchDto.getFieldName()) || ObjectUtils.isEmpty(searchDto.getSearchValue())) {
+                throw new IllegalArgumentException("Field name and search value cannot be null or empty");
+            }
+
+            // Query repository using dynamic field name and value
+            int page = pageable.getPageNumber();
+            int size = pageable.getPageSize();
+            Page<Client> clients = clientRepository.findByFieldNameContainingIgnoreCase(searchDto.getFieldName(), PageRequest.of(page, size));
+            return new RestResponse(
+                    RestResponseObject.builder().message("Fetched Clients Successfully").payload(clients.getContent()).build(),
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("fetchPaginatedClients Exception: {}", e.getMessage());
+            return new RestResponse(
+                    RestResponseObject.builder().message(e.getMessage()).build(),
+                    HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
+
 }
